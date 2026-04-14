@@ -1,13 +1,16 @@
 import {
-  Body,
   Controller,
   Get,
   Param,
-  Post
+  ParseUUIDPipe,
+  Post,
+  Query,
+  UploadedFile,
+  UseInterceptors
 } from '@nestjs/common';
-import { CreateImageDto } from 'src/application/dto/request/create-image.dto';
-import { UpdateImageDto } from 'src/application/dto/request/update-image.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateImageUseCase } from 'src/application/service/image/create-image.case';
+import { FindByIdImageUseCase } from 'src/application/service/image/find-by-id-image.case';
 import { UpdateImageUseCase } from 'src/application/service/image/update-image.case';
 
 
@@ -16,19 +19,35 @@ export class ImageController {
   constructor(
     private readonly _create_image_use_case: CreateImageUseCase,
     private readonly _update_image_use_case: UpdateImageUseCase,
+    private readonly _find_by_id_image_use_case: FindByIdImageUseCase,
   ) { }
 
 
   @Get('by-id')
   async getImageById(@Param('id') id: string) {
+    return this._find_by_id_image_use_case.execute(id);
   }
+
+
   @Post('create')
-  async createImage(@Body() createImageDto: CreateImageDto) {
-    return this._create_image_use_case.execute(createImageDto);
+  @UseInterceptors(FileInterceptor('file'))
+  async createImage(@UploadedFile() file: Express.Multer.File) {
+    return this._create_image_use_case.execute({
+      url: file.originalname,
+      type: file.mimetype,
+      bytes: file.size,
+    });
   }
+
   @Post('update')
-  async updateImage(@Body() updateImageDto: UpdateImageDto) {
-    return this._update_image_use_case.execute(updateImageDto);
+  @UseInterceptors(FileInterceptor('file'))
+  async updateImage(@Query('id', ParseUUIDPipe) id: string, @UploadedFile() file: Express.Multer.File) {
+    return this._update_image_use_case.execute({
+      id,
+      url: file.originalname,
+      type: file.mimetype,
+      bytes: file.size,
+    });
   }
 
 }
