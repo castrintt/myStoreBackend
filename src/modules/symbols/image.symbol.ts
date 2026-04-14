@@ -1,0 +1,1 @@
+export const ImageRepositorySymbol = Symbol('ImageRepositorySymbol');

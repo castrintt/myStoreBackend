@@ -1,16 +1,23 @@
 import {
+  Body,
   Controller,
-  Inject
+  Post
 } from '@nestjs/common';
-import { type IUserService } from 'src/domain/interfaces/user/IUserService';
-import { UserServiceSymbol } from 'src/IoC/symbols/user.symbol';
+import { CreateUserDto } from 'src/application/dto/request/create-user.dto';
+import { CreateUserUseCase } from 'src/application/service/user/create-user.case';
+import { Public } from 'src/shared/decorators/public.decorator';
 
 @Controller('user')
 export class UserController {
   constructor(
-    @Inject(UserServiceSymbol)
-    private readonly _user_service: IUserService
+    private readonly _create_user_use_case: CreateUserUseCase
   ) { }
 
+
+  @Post('create')
+  @Public()
+  async createUser(@Body() createUserDto: CreateUserDto): Promise<{ id: string }> {
+    return this._create_user_use_case.execute(createUserDto);
+  }
 
 }

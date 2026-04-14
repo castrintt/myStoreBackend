@@ -1,10 +1,11 @@
 import { Global, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductController } from 'src/api/product.controller';
-import { UserService } from 'src/application/service/user.service';
+
+import { CreateUserUseCase } from 'src/application/service/user/create-user.case';
 import { User } from 'src/domain/entities/user.entity';
 import { UserRepository } from 'src/infrastructure/repository/user.repository';
-import { UserRepositorySymbol, UserServiceSymbol } from '../symbols/user.symbol';
+import { UserRepositorySymbol } from '../symbols/user.symbol';
 
 @Global()
 @Module({
@@ -15,10 +16,7 @@ import { UserRepositorySymbol, UserServiceSymbol } from '../symbols/user.symbol'
       provide: UserRepositorySymbol,
       useClass: UserRepository,
     },
-    {
-      provide: UserServiceSymbol,
-      useClass: UserService,
-    }
+    CreateUserUseCase
   ],
   exports: [
     UserRepositorySymbol,

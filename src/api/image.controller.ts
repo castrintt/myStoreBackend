@@ -1,15 +1,19 @@
 import {
   Controller,
-  Inject
+  Get,
+  Param
 } from '@nestjs/common';
-import { type IImageService } from 'src/domain/interfaces/image/IImageService';
-import { ImageServiceSymbol } from 'src/IoC/symbols/image.symbol';
 
 
 @Controller('image')
 export class ImageController {
   constructor(
-    @Inject(ImageServiceSymbol)
-    private readonly _image_service: IImageService) { }
+
+  ) { }
+
+
+  @Get('by-id')
+  async getImageById(@Param('id') id: string) {
+  }
 
 }

@@ -12,7 +12,7 @@ export class Product {
     @Column()
     price: number;
 
-    @OneToOne(() => Image, (image) => image.product)
+    @OneToOne(() => Image, (image) => image.product, { cascade: true })
     @JoinColumn({ name: 'image_id' })
     image: Image;
 
