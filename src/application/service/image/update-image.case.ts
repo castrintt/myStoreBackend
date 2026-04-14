@@ -10,7 +10,7 @@ export class UpdateImageUseCase {
         private readonly _image_repository: IImageRepository
     ) { }
 
-    async execute(id: string, image: UpdateImageDto): Promise<boolean> {
-        return this._image_repository.update(id, image);
+    async execute(image: UpdateImageDto): Promise<boolean> {
+        return this._image_repository.update(image.id, image);
     }
 }

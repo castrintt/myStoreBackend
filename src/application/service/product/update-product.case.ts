@@ -10,7 +10,7 @@ export class UpdateProductUseCase {
         private readonly _product_repository: IProductRepository
     ) { }
 
-    async execute(id: string, product: UpdateProductDto): Promise<boolean> {
-        return this._product_repository.update(id, product);
+    async execute(product: UpdateProductDto): Promise<boolean> {
+        return this._product_repository.update(product.id, product);
     }
 }

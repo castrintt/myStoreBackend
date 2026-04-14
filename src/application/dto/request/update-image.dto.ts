@@ -1,6 +1,9 @@
-import { IsBase64, IsNotEmpty, IsString } from "class-validator";
+import { IsBase64, IsNotEmpty, IsString, IsUUID } from "class-validator";
 
 export class UpdateImageDto {
+    @IsUUID('4')
+    @IsNotEmpty()
+    id: string;
     @IsString()
     @IsNotEmpty()
     url: string;
