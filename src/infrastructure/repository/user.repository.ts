@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { ConflictException, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { plainToInstance } from "class-transformer";
 import { CreateUserDto } from "src/application/dto/request/create-user.dto";
@@ -13,6 +13,8 @@ export class UserRepository implements IUserRepository {
         private readonly _user_entity: Repository<User>) {
     }
     async create(user: CreateUserDto): Promise<{ id: string; }> {
+        const userExists = await this._user_entity.findOne({ where: { email: user.email } });
+        if (userExists) throw new ConflictException('User already exists');
         const dtoToEntity = plainToInstance(User, user);
         const userEntity = await this._user_entity.save(dtoToEntity);
         return { id: userEntity.id };

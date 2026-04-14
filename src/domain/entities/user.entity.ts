@@ -12,7 +12,7 @@ export class User {
     @Column({ length: 50, unique: true })
     email: string;
 
-    @Column({ length: 20 })
+    @Column({ length: 255 })
     password: string;
 
     @Column({ default: () => 'CURRENT_TIMESTAMP' })

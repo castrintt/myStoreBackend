@@ -7,7 +7,6 @@ export class Swagger {
             .setTitle('Api app de estudo')
             .setDescription('Documentação da API feita com NestJS e Swagger')
             .setVersion('1.0')
-            .addTag('users')
             .addBearerAuth(
                 {
                     type: 'http',
@@ -21,6 +20,6 @@ export class Swagger {
             )
             .build();
         const document = SwaggerModule.createDocument(app, config);
-        SwaggerModule.setup('api', app, document);
+        SwaggerModule.setup('swagger', app, document);
     }
 }
