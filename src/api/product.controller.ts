@@ -13,6 +13,7 @@ import { UpdateProductDto } from 'src/application/dto/request/update-product.dto
 import { CreateProductUseCase } from 'src/application/service/product/create-product.case';
 import { DeleteProductUseCase } from 'src/application/service/product/delete-product.case';
 import { FindByIdProductUseCase } from 'src/application/service/product/find-by-id-product.case';
+import { ListProductsUseCase } from 'src/application/service/product/list-products.case';
 import { UpdateProductUseCase } from 'src/application/service/product/update-product.case';
 
 
@@ -24,8 +25,14 @@ export class ProductController {
     private readonly _update_product_use_case: UpdateProductUseCase,
     private readonly _find_by_id_product_use_case: FindByIdProductUseCase,
     private readonly _delete_product_use_case: DeleteProductUseCase,
+    private readonly _list_products_use_case: ListProductsUseCase,
   ) { }
 
+
+  @Get('list')
+  async listProducts() {
+    return this._list_products_use_case.execute();
+  }
 
   @Post('create')
   async createProduct(@Body() createProductDto: CreateProductDto) {

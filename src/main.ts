@@ -5,6 +5,7 @@ import { MainModule } from './shared/main.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(MainModule);
+  app.enableCors({ origin: true })
   Pipe.configure(app);
   Swagger.configure(app);
   await app.listen(process.env.PORT ?? 3000);

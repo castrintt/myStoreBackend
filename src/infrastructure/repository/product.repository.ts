@@ -4,6 +4,7 @@ import { plainToInstance } from "class-transformer";
 import { CreateProductDto } from "src/application/dto/request/create-product.dto";
 import { UpdateProductDto } from "src/application/dto/request/update-product.dto";
 import { FindProductDto } from "src/application/dto/response/find-product.dto";
+import { Image } from "src/domain/entities/image.entity";
 import { Product } from "src/domain/entities/product.entity";
 import { IProductRepository } from "src/domain/interfaces/product/IProductRepository";
 import { Repository } from "typeorm";
@@ -15,19 +16,37 @@ export class ProductRepository implements IProductRepository {
         private readonly _product_entity: Repository<Product>) {
     }
     async create(product: CreateProductDto): Promise<{ id: string; }> {
-        const dtoToEntity = plainToInstance(Product, product);
-        const productEntity = await this._product_entity.save(dtoToEntity);
+        const entity = this._product_entity.create({
+            name: product.name,
+            price: product.price,
+            image: { id: product.imageId } as Image,
+        });
+        const productEntity = await this._product_entity.save(entity);
         return { id: productEntity.id };
     }
 
     async findOne(id: string): Promise<FindProductDto | null> {
-        const productEntity = await this._product_entity.findOne({ where: { id } });
-        return productEntity ? plainToInstance(FindProductDto, productEntity) : null;
+        const productEntity = await this._product_entity.findOne({
+            where: { id },
+            relations: ['image'],
+        });
+        return productEntity ? this.toFindProductDto(productEntity) : null;
     }
-    
+
     async findAll(): Promise<FindProductDto[]> {
-        const productEntities = await this._product_entity.find();
-        return productEntities.map(productEntity => plainToInstance(FindProductDto, productEntity));
+        const productEntities = await this._product_entity.find({
+            relations: ['image'],
+        });
+        return productEntities.map((p) => this.toFindProductDto(p));
+    }
+
+    private toFindProductDto(productEntity: Product): FindProductDto {
+        return plainToInstance(FindProductDto, {
+            id: productEntity.id,
+            name: productEntity.name,
+            price: productEntity.price,
+            imageId: productEntity.image?.id ?? null,
+        });
     }
 
     async update(id: string, product: UpdateProductDto): Promise<boolean> {
